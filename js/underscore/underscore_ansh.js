@@ -2,10 +2,14 @@
 var _ = {}
 
 // module.exports is the result of a require call
+// exports = _ won't work because it doesn't change
+// the underlying object. it just makes exports point to a new obj.
+module.exports = _;
 
 var ArrayProto = Array.prototype;
 
 var nativeForEach         = ArrayProto.forEach;
+var nativeMap             = ArrayProto.map;
 
 _.each = function(obj, iterator, context) {
   if (obj == null) return;
@@ -17,19 +21,10 @@ _.each = function(obj, iterator, context) {
     }
   } else {
     for (var key in obj) {
-      if (_.has(obj, key)) {
-        if (iterator.call(context, obj[key], key, obj) === breaker) return;
-      }
+      iterator.call(context, obj[key], key, obj)
     }
   }
 };
-
-util = require('util')
-_.each([1, 2, 3], function () { util.puts(arguments[0])} );
-
-require('./each.js')
-
-var nativeMap = ArrayProto.map;
 
 _.map = function (obj, iterator, context) {
   result = [];
@@ -39,15 +34,9 @@ _.map = function (obj, iterator, context) {
   } 
   else {
   // better to use each because it is prewritten => save some code
-    for (var key in obj) {
-      result.push(iterator.call(context, obj[key], key, obj));
-    }
+    _.each(obj, function (value, key, obj) {
+      result.push(iterator.call(context, value, key, obj));
+    });
   }
   return result;
 };
-
-console.log(_.map([1, 2, 3], function(num){ return num * 3; }));
-console.log(_.map({one : 1, two : 2, three : 3}, 
-  function(num, key){ 
-    return num * 3; 
-  }));
