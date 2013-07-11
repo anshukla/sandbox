@@ -163,7 +163,25 @@ _.where = function (list, properties) {
  *  Calls `object.hasOwnProperty(key)` with a stored reference in case the
  *  function has been overridden.
  */
+
 _.has = function (object, key) {
   if (hasOwnProperty)
     return hasOwnProperty.call(object, key);
+}
+
+
+/* max(list, [iterator], [context])
+ * --------------------------------
+ *  1. Returns the maximum value (integer) in a list
+ *  2. If iterator is passed, then it will return the value for which iterator
+ *  returns the maximum value
+ */
+
+_.max = function (list, iterator, context) { 
+  var ret = {value: -Infinity, calculated: -Infinity};
+  _.each(list, function (value, key, list) {
+    var calculated = !iterator ? value : iterator.call(context, value);
+    calculated > ret.calculated && (ret = {value: value, calculated: calculated});
+  });
+  return ret.value;
 }
