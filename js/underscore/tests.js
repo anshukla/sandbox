@@ -41,3 +41,12 @@ var stooges = [{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'cu
 console.log(
   _.max(stooges, function(stooge){ return stooge.age; })
 );
+
+// test groupBy
+
+console.log(
+  _.groupBy([1.3, 2.1, 2.4], function(num){ return Math.floor(num); })
+);
+console.log(
+  _.groupBy(['one', 'two', 'three'], 'length')
+);

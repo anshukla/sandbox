@@ -185,3 +185,22 @@ _.max = function (list, iterator, context) {
   });
   return ret.value;
 }
+
+/* groupBy(list, iterator, [context])
+ * ----------------------------------
+ *  1. Iterate through every element in the set
+ *  2. Apply the iterator on every element
+ *    a. If the iterator is a function, call iterator and the separate dpeending
+ *    on the return value of the iterator on every element
+ *    b. If the iterator is a string, separate based on the specified property
+ */
+
+_.groupBy = function (list, iterator, context) {
+  var result = {};
+  _.each (list, function (value, key, list) {
+    var type = typeof iterator === "function" ? 
+      iterator.call(context, value) : value[iterator];
+    (_.has(result, type) ? result[type].push(value) : (result[type] = [value]));
+  });
+  return result;
+};
