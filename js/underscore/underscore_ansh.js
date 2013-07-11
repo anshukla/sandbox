@@ -1,4 +1,3 @@
-// Copied from underscore.js library
 var _ = {}
 
 // module.exports is the result of a require call
@@ -7,12 +6,22 @@ var _ = {}
 module.exports = _;
 
 var ArrayProto = Array.prototype;
+var ObjectProto = Object.prototype;
 
 // clever approach stolen from underscore to save references to native functions
+// important in JS because the references can be overwritten for some objects
+
 var nativeForEach         = ArrayProto.forEach;
 var nativeMap             = ArrayProto.map;
 var nativeReduce          = ArrayProto.reduce;
+var nativeSome            = ArrayProto.some;
 
+var hasOwnProperty        = ObjectProto.hasOwnProperty;
+
+// object that is returned if we want to break early from any loop
+var breaker = {};
+
+// copied from underscore library
 _.each = function(obj, iterator, context) {
   if (obj == null) return;
   if (nativeForEach && obj.forEach === nativeForEach) {
@@ -22,12 +31,17 @@ _.each = function(obj, iterator, context) {
       if (iterator.call(context, obj[i], i, obj) === breaker) return;
     }
   } else {
+    // also checks if the key is in obj, not sure why
+    // perhaps for (var ...) is not as well defined
     for (var key in obj) {
-      iterator.call(context, obj[key], key, obj)
+      if (_.has(obj, key)){
+        if (iterator.call(context, obj[key], key, obj) === breaker) return;
+      }
     }
   }
 };
 
+// begin personal implementations
 _.map = function (obj, iterator, context) {
   result = [];
   if (obj == null) return results;
@@ -78,8 +92,18 @@ _.reduce = function (list, iterator, memo, context) {
   if (typeof iterator !== 'function')
     throw new TypeError(iterator + ' is not a function');
 
+  // use this to store how to treat the first element in iteration
   var initial = arguments.length > 2;
 
+  if (nativeReduce && nativeReduce === list.reduce) {
+    // TODO(ansh) this won't work until you bind the iterator to the right
+    // context. by default the iterator will be passed the list object but this
+    // isn't necessarily desirable
+
+    // even if memo is undefined, passing it will make the native reduce believe
+    // that it has been defined ( TODO(ansh): check that this is true )
+    return initial ? list.reduce(iterator, memo) : list.reduce(iterator);
+  }
   _.each(list, function(value, key, obj) {
     if (!initial) {
       memo = value;
@@ -92,3 +116,54 @@ _.reduce = function (list, iterator, memo, context) {
   
   return memo;
 };
+
+/* find(list, iterator, [context])
+ * -------------------------------
+ *  1. Look through every value on the list
+ *  2. Return the first one that passes a truth test defined by iterator
+ *    a. Seems like we can't just simply use each because there's no way of
+ *    exiting out early from it
+ *    b. Above observation is correct – this is why underscore has ability to
+ *    return a breaker object to return from each early.
+ *  3. Return undefined if no values pass the test
+ */
+
+_.find = function (list, iterator, context) {
+  var ret;
+  _.each(list, function (value) { 
+    if (iterator.call(context, value)) 
+      ret = value;
+    return breaker; 
+  }, context);
+  return ret;
+};
+
+/* where(list, properties)
+ * -----------------------
+ *  1. Look through every value in the list
+ *  2. Collect all values where object contains listen key value pairs
+ *  3. Return array
+ */
+
+_.where = function (list, properties) {
+  var ret = [];
+  _.each(list, function (value, key, list) {
+    var seen = true;
+    for (var key in properties) {
+      if (!_.has(value, key)) seen = false;
+      else if (value[key] !== properties[key]) seen = false;
+    }
+    if (seen) ret.push(value);
+  });
+  return ret;
+};
+
+/* has(object, key)
+ * ----------------
+ *  Calls `object.hasOwnProperty(key)` with a stored reference in case the
+ *  function has been overridden.
+ */
+_.has = function (object, key) {
+  if (hasOwnProperty)
+    return hasOwnProperty.call(object, key);
+}

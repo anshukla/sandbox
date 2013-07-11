@@ -20,8 +20,17 @@ console.log(_.reduce([0, 1, 2, 3, 4], function(previousValue, currentValue,
                                                index, array) {
   return previousValue + currentValue;
 }));
-
 console.log(_.reduce([0, 1, 2, 3, 4], function(previousValue, currentValue, 
                                                index, array) {
   return previousValue + currentValue;
 }, 10));
+
+// test where
+var listOfPlays = [
+  {author: "Shakespeare", year: 1611, title: "Cymbeline"},
+  {author: "Shakespeare", year: 1611, title: "The Tempest"},
+  {author: "Arthur Miller", year: 1854, title: "The Crucible"} ]
+
+console.log(
+  _.where(listOfPlays, {author: "Shakespeare", year: 1611})
+  );
