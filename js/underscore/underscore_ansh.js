@@ -228,7 +228,7 @@ _.isArray = function (obj) {
  */
 
 _.flatten = function (array, shallow) {
-  var flat = []
+  var flat = [];
   for (var i = 0, l = array.length; i < l; i++) {
       flat = flat.concat(
               _.isArray(array[i]) ?
@@ -237,3 +237,30 @@ _.flatten = function (array, shallow) {
   }
   return flat;
 };
+
+/* intersection(*arrays)
+ * ---------------------
+ *  Computes the list of values that are the intersection of all the arrays.
+ *  Each value in return array is present in all arrays.
+ */
+
+_.intersection = function (arrays) {
+  var result = [];
+  var freq = {};
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    var arr = arguments[i];
+    _.each(arr, function(value) {
+      freq[value] = freq[value] ? freq[value] + 1 : 1;
+    });
+  }
+  
+  // Don't call each here because some key might have name 'length' which
+  // would mess up implementation of each
+  
+  console.log(freq);
+  for (var key in freq) {
+    freq[key] > 1 && result.push(key);
+  }
+  return result;
+}
+

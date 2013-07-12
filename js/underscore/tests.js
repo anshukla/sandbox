@@ -59,3 +59,9 @@ console.log(
 console.log(
   _.flatten([1, [2], [3, [[4]]]], true)
 );
+
+// test intersection
+
+console.log(
+  _.intersection([1, 2, 3], [101, 2, 1, 10], [2, 1])
+);
