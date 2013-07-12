@@ -17,6 +17,7 @@ var nativeReduce          = ArrayProto.reduce;
 var nativeSome            = ArrayProto.some;
 
 var hasOwnProperty        = ObjectProto.hasOwnProperty;
+var toString              = ObjectProto.toString;
 
 // object that is returned if we want to break early from any loop
 var breaker = {};
@@ -203,4 +204,36 @@ _.groupBy = function (list, iterator, context) {
     (_.has(result, type) ? result[type].push(value) : (result[type] = [value]));
   });
   return result;
+};
+
+/* _.isArray(obj)
+ * --------------
+ *  Returns true if array, false otherwise
+ */
+_.isArray = function (obj) {
+  return toString.call(obj) === '[object Array]';
+}
+
+/* flatten(array, [shallow])
+ * -------------------------
+ *  1. Traverse through nested array
+ *  2. Flatten it
+ *  3. If shallow passed, only do it for the first level
+ *
+ *  One approach is to do this recurisvely? Array functions that might help:
+ *  .concat .push. Array addition in Javascript is the same as pushing the
+ *  second array
+ *
+ *  TODO(ansh): Nested ternary is ugh-laaay.
+ */
+
+_.flatten = function (array, shallow) {
+  var flat = []
+  for (var i = 0, l = array.length; i < l; i++) {
+      flat = flat.concat(
+              _.isArray(array[i]) ?
+              (shallow ? array[i] : _.flatten(array[i], false))
+              : [array[i]]);
+  }
+  return flat;
 };

@@ -50,3 +50,12 @@ console.log(
 console.log(
   _.groupBy(['one', 'two', 'three'], 'length')
 );
+
+// test flatten
+
+console.log(
+  _.flatten([1, [2], [3, [[4]]]])
+);
+console.log(
+  _.flatten([1, [2], [3, [[4]]]], true)
+);
