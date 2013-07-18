@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block body %}
+<section id="blogapp">
+	<header id="header">
+		<h1>Blog Posts So Far...</h1>
+	</header>
+	<section id="main">
+		<div class=metanav>
+        	{% if not session.logged_in %}
+    		<a href="{{ url_for('login') }}">log in</a>
+        	{% else %}
+    		<a href="{{ url_for('logout') }}">log out</a>
+        	{% endif %}
+        </div>
+    	<ul id="entries"></ul>
+    </section>
+    <footer id="footer"></footer>
+</section>
+<div id="info">
+	<p>Coming Soon: GUI for adding posts!</p>
+	<p>Written by Ansh Shukla with help from Addy Osami's 'Backbone Fundamentals'</p>
+</div>
+
+
+{% endblock %}

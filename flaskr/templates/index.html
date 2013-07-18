@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge,chrome=1">
+		<title> Ansh • Shukla </title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	</head>
+	<body>
+		<script src="{{ url_for('static', filename='assets/vendor/jquery.js') }}"></script>
+		<script src="{{ url_for('static', filename='assets/vendor/underscore.js') }}"></script>
+		<script src="{{ url_for('static', filename='assets/vendor/backbone.js') }}"></script>
+		<script src="{{ url_for('static', filename='models/blog.js') }}"></script>
+		<script type="text/template" id="item-template"></script>
+		<script type="text/template" id="stats-template"></script>
+		<script src="{{ url_for('static', filename='collections/blog.js') }}"></script>
+		<script src="{{ url_for('static', filename='views/blog.js') }}"></script>
+		<script src="{{ url_for('static', filename='views/app.js') }}"></script>
+		<script src="{{ url_for('static', filename='routers/router.js') }}"></script>
+		<script src="{{ url_for('static', filename='app.js') }}"></script>
+		{% block body %}{% endblock %}
+	</body>
+</html>
